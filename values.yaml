@@ -1,0 +1,6 @@
+KubernetesAPIServerKey: ""
+KubernetesAPIServerCertificate: ""
+ServiceAccountPublicKey: ""
+KubernetesCACertificate: ""
+ServiceAccountPrivateKey: ""
+KubernetesCAKey: ""
