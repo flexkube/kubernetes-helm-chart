@@ -58,6 +58,10 @@ spec:
         - --service-account-key-file=/etc/kubernetes/pki/service-account.crt
         # IP address which will be added to the kubernetes.default service endpoint
         #- --advertise-address=10.0.0.2
+        # Bootstrap control plane is running on port 8443 instead of standard 6443, as haproxy is listening on 6443 for
+        # load balancing and failover. Boostrap kube-apiserver registers kubernetes.default.svc with port 8443, so we need to
+        # use the same port here as bootstrap kube-apiserver.
+        - --secure-port=8443
         env:
         - name: POD_IP
           valueFrom:
@@ -71,7 +75,7 @@ spec:
           mountPath: /etc/ssl/certs
           readOnly: true
         ports:
-        - containerPort: 6443
+        - containerPort: 8443
       volumes:
       - name: secrets
         secret:
