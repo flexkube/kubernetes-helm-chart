@@ -12,7 +12,7 @@ spec:
     matchLabels:
       tier: control-plane
       k8s-app: kube-apiserver
-  updateStrategy:
+  strategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 1
