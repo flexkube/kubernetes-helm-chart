@@ -1,4 +1,5 @@
 replicas: 1
+maxUnavailable: 1
 KubernetesAPIServerKey: ""
 KubernetesAPIServerCertificate: ""
 ServiceAccountPublicKey: ""

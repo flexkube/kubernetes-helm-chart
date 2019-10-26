@@ -15,7 +15,7 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1
+      maxUnavailable: {{ .Values.maxUnavailable }}
   template:
     metadata:
       labels:
