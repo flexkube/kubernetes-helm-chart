@@ -62,6 +62,8 @@ spec:
         # load balancing and failover. Boostrap kube-apiserver registers kubernetes.default.svc with port 8443, so we need to
         # use the same port here as bootstrap kube-apiserver.
         - --secure-port=8443
+        # Prefer to talk to kubelets over InternalIP rather than via Hostname or DNS, to make it more robust
+        - --kubelet-preferred-address-types=InternalIP,Hostname,InternalDNS,ExternalDNS,ExternalIP
         env:
         - name: POD_IP
           valueFrom:
