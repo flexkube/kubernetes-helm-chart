@@ -48,7 +48,7 @@ spec:
         # Required for TLS bootstrapping
         - --enable-bootstrap-token-auth=true
         # Override default service cluster IP, as it conflicts with host CIDR.
-        - --service-cluster-ip-range=11.0.0.0/24
+        - --service-cluster-ip-range={{ .Values.serviceCIDR }}
         # To disable access without authentication
         - --insecure-port=0
         # Since we will run self-hosted K8s, pods like kube-proxy must run as privileged containers, so we must allow them.
