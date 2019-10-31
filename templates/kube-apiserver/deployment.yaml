@@ -40,7 +40,7 @@ spec:
         command:
         - /hyperkube
         - kube-apiserver
-        - --etcd-servers=http://10.0.0.2:2379
+        - --etcd-servers={{ .Values.etcdServers }}
         - --bind-address=0.0.0.0
         - --client-ca-file=/etc/kubernetes/pki/ca.crt
         - --tls-cert-file=/etc/kubernetes/pki/apiserver.crt
