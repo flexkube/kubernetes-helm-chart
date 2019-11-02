@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-controller-manager
+  namespace: kube-system
+data:
+  kubeconfig: |
+    apiVersion: v1
+    clusters:
+    - name: local
+      cluster:
+        server: https://localhost:6443
+        certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    users:
+    - name: service-account
+      user:
+        # Use service account token
+        tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    contexts:
+    - context:
+        cluster: local
+        user: service-account

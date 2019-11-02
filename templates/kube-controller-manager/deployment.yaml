@@ -75,6 +75,13 @@ spec:
         - --cluster-signing-key-file=/etc/kubernetes/secrets/ca.key
         - --service-account-private-key-file=/etc/kubernetes/secrets/service-account.key
         - --root-ca-file=/etc/kubernetes/secrets/root.crt
+        - --kubeconfig=/etc/kubernetes/kubeconfig
+        - --master=https://$(HOST_IP):6443
+        env:
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
         livenessProbe:
           httpGet:
             scheme: HTTPS
@@ -83,6 +90,9 @@ spec:
           initialDelaySeconds: 15
           timeoutSeconds: 15
         volumeMounts:
+        - name: kube-controller-manager
+          mountPath: /etc/kubernetes
+          readOnly: true
         - name: secrets
           mountPath: /etc/kubernetes/secrets
           readOnly: true
@@ -90,4 +100,7 @@ spec:
       - name: secrets
         secret:
           secretName: kube-controller-manager
+      - name: kube-controller-manager
+        configMap:
+          name: kube-controller-manager
       dnsPolicy: Default # Don't use cluster DNS.
