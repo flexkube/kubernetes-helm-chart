@@ -130,13 +130,7 @@ spec:
         - name: secrets
           mountPath: /etc/kubernetes/pki
           readOnly: true
-        - name: ssl-certs-host
-          mountPath: /etc/ssl/certs
-          readOnly: true
       volumes:
       - name: secrets
         secret:
           secretName: kube-apiserver
-      - name: ssl-certs-host
-        hostPath:
-          path: /etc/ssl/certs
