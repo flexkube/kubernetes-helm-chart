@@ -39,20 +39,18 @@ spec:
     spec:
       affinity:
         podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: tier
-                  operator: In
-                  values:
-                  - control-plane
-                - key: k8s-app
-                  operator: In
-                  values:
-                  - kube-controller-manager
-              topologyKey: kubernetes.io/hostname
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: tier
+                operator: In
+                values:
+                - control-plane
+              - key: k8s-app
+                operator: In
+                values:
+                - kube-controller-manager
+            topologyKey: kubernetes.io/hostname
       #nodeSelector:
       #  node-role.kubernetes.io/master: ""
       priorityClassName: system-cluster-critical
