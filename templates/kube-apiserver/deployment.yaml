@@ -88,7 +88,9 @@ spec:
         # We run on host network, but we want to advertise Pod IP address to kubernetes.default.svc service endpoint.
         # Without this line, we may get public IP address being added to the endpoint, which is not correct.
         - --advertise-address=$(HOST_IP)
+        # CA certificate for validating API clients
         - --client-ca-file=/etc/kubernetes/pki/ca.crt
+        # TLS certificates for HTTPS serving
         - --tls-cert-file=/etc/kubernetes/pki/apiserver.crt
         - --tls-private-key-file=/etc/kubernetes/pki/apiserver.key
         # Required for TLS bootstrapping
@@ -102,8 +104,6 @@ spec:
         - --authorization-mode=RBAC,Node
         # Required to validate service account tokens created by controller manager
         - --service-account-key-file=/etc/kubernetes/pki/service-account.crt
-        # IP address which will be added to the kubernetes.default service endpoint
-        #- --advertise-address=10.0.0.2
         # Bootstrap control plane is running on port 8443 instead of standard 6443, as haproxy is listening on 6443 for
         # load balancing and failover. Boostrap kube-apiserver registers kubernetes.default.svc with port 8443, so we need to
         # use the same port here as bootstrap kube-apiserver.
