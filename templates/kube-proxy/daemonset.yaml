@@ -38,11 +38,6 @@ spec:
         - ./hyperkube
         - kube-proxy
         - --config=/etc/kubernetes/kube-proxy.yaml
-        env:
-        - name: NODE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
         livenessProbe:
           httpGet:
             path: /healthz
