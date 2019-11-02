@@ -6,21 +6,40 @@ metadata:
   labels:
     tier: control-plane
     k8s-app: kube-apiserver
+    {{- if eq .Values.replicas 1.0 }}
+    pdb: controlplane
+    {{- end }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       tier: control-plane
       k8s-app: kube-apiserver
+      {{- if eq .Values.replicas 1.0 }}
+      pdb: controlplane
+      {{- end }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: {{ .Values.maxUnavailable }}
+      # If only one instance is running, let it be unavailable, as we use
+      # host port, so we cannot have 2 instances running at the same time on a
+      # single node.
+      #
+      # If there is only one replica of the pod, don't allow it to be unavailable.
+      # However, we use hostPort for exposing it, so updating it won't work, as it
+      {{- if eq .Values.replicas 1.0 }}
+      maxUnavailable: 0
+      {{- else }}
+      maxUnavailable: 1
+      {{- end }}
   template:
     metadata:
       labels:
         tier: control-plane
         k8s-app: kube-apiserver
+        {{- if eq .Values.replicas 1.0 }}
+        pdb: controlplane
+        {{- end }}
       annotations:
         checkpointer.alpha.coreos.com/checkpoint: "true"
         seccomp.security.alpha.kubernetes.io/pod: 'docker/default'

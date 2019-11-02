@@ -6,21 +6,34 @@ metadata:
   labels:
     tier: control-plane
     k8s-app: kube-controller-manager
+    {{- if eq .Values.replicas 1.0 }}
+    pdb: controlplane
+    {{- end }}
 spec:
   replicas: {{ .Values.replicas }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: {{ .Values.maxUnavailable }}
+      {{- if eq .Values.replicas 1.0 }}
+      maxUnavailable: 0
+      {{- else }}
+      maxUnavailable: 1
+      {{- end }}
   selector:
     matchLabels:
       tier: control-plane
       k8s-app: kube-controller-manager
+      {{- if eq .Values.replicas 1.0 }}
+      pdb: controlplane
+      {{- end }}
   template:
     metadata:
       labels:
         tier: control-plane
         k8s-app: kube-controller-manager
+        {{- if eq .Values.replicas 1.0 }}
+        pdb: controlplane
+        {{- end }}
       annotations:
         seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
     spec:
