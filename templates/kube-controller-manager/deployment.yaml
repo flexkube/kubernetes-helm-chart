@@ -86,20 +86,8 @@ spec:
         - name: secrets
           mountPath: /etc/kubernetes/secrets
           readOnly: true
-        - name: volumeplugins
-          mountPath: /var/lib/kubelet/volumeplugins
-          readOnly: true
-        - name: ssl-host
-          mountPath: /etc/ssl/certs
-          readOnly: true
       volumes:
       - name: secrets
         secret:
           secretName: kube-controller-manager
-      - name: ssl-host
-        hostPath:
-          path: /etc/ssl/certs
-      - name: volumeplugins
-        hostPath:
-          path: /var/lib/kubelet/volumeplugins
       dnsPolicy: Default # Don't use cluster DNS.
