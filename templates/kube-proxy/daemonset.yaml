@@ -60,9 +60,6 @@ spec:
         - name: lib-modules
           mountPath: /lib/modules
           readOnly: true
-        - name: ssl-certs-host
-          mountPath: /etc/ssl/certs
-          readOnly: true
       volumes:
       - name: kubeconfig
         configMap:
@@ -70,6 +67,3 @@ spec:
       - name: lib-modules
         hostPath:
           path: /lib/modules
-      - name: ssl-certs-host
-        hostPath:
-          path: /etc/ssl/certs
