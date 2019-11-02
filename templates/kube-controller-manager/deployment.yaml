@@ -74,6 +74,7 @@ spec:
         - --cluster-signing-cert-file=/etc/kubernetes/secrets/ca.crt
         - --cluster-signing-key-file=/etc/kubernetes/secrets/ca.key
         - --service-account-private-key-file=/etc/kubernetes/secrets/service-account.key
+        - --root-ca-file=/etc/kubernetes/secrets/root.crt
         livenessProbe:
           httpGet:
             scheme: HTTPS
