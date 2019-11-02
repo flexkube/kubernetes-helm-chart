@@ -3,7 +3,6 @@ kind: Secret
 metadata:
   # Name MUST be of form "bootstrap-token-<token id>"
   name: bootstrap-token-07401b
-  namespace: kube-system
 type: bootstrap.kubernetes.io/token
 stringData:
   # Human readable description. Optional.

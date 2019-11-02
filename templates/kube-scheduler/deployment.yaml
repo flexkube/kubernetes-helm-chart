@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kube-scheduler
-  namespace: kube-system
   labels:
     tier: control-plane
     k8s-app: kube-scheduler

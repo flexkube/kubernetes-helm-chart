@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kube-controller-manager
-  namespace: kube-system
   labels:
     tier: control-plane
     k8s-app: kube-controller-manager
