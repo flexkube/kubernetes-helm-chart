@@ -70,6 +70,14 @@ spec:
         command:
         - ./hyperkube
         - kube-scheduler
+        - --config=/etc/kubernetes/kube-scheduler.yaml
+        # Override address where we connect to API server
+        - --master=https://$(HOST_IP):6443
+        env:
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
         livenessProbe:
           httpGet:
             scheme: HTTPS
@@ -77,3 +85,11 @@ spec:
             port: 10259
           initialDelaySeconds: 15
           timeoutSeconds: 15
+        volumeMounts:
+        - name: kube-scheduler
+          mountPath: /etc/kubernetes
+          readOnly: true
+      volumes:
+      - name: kube-scheduler
+        configMap:
+          name: kube-scheduler

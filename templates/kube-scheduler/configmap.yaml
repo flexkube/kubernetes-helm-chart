@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-scheduler
+  namespace: kube-system
+data:
+  kube-scheduler.yaml: |
+    apiVersion: kubescheduler.config.k8s.io/v1alpha1
+    kind: KubeSchedulerConfiguration
+    clientConnection:
+      kubeconfig: /etc/kubernetes/kubeconfig
+  kubeconfig: |
+    apiVersion: v1
+    clusters:
+    - name: local
+      cluster:
+        server: https://localhost:6443
+        certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    users:
+    - name: service-account
+      user:
+        # Use service account token
+        tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    contexts:
+    - context:
+        cluster: local
+        user: service-account
