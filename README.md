@@ -1,6 +1,6 @@
 # kubernetes
 
-Installs Kubernetes self-hosted control plane.
+Installs Kubernetes control plane.
 
 ## Work-Arounds for Known Issues
 
