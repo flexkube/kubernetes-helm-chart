@@ -86,7 +86,7 @@ spec:
         - kube-scheduler
         - --config=/etc/kubernetes/kube-scheduler.yaml
         # Override address where we connect to API server
-        - --master=https://$(HOST_IP):6443
+        - --master=https://$(HOST_IP):{{ .Values.apiServerPort }}
         env:
         - name: HOST_IP
           valueFrom:

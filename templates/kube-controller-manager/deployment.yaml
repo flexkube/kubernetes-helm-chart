@@ -90,7 +90,7 @@ spec:
         - --service-account-private-key-file=/etc/kubernetes/secrets/service-account.key
         - --root-ca-file=/etc/kubernetes/secrets/root.crt
         - --kubeconfig=/etc/kubernetes/kubeconfig
-        - --master=https://$(HOST_IP):6443
+        - --master=https://$(HOST_IP):{{ .Values.apiServerPort }}
         env:
         - name: HOST_IP
           valueFrom:

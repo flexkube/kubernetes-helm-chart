@@ -14,7 +14,7 @@ data:
     clusters:
     - name: local
       cluster:
-        server: https://localhost:6443
+        server: https://localhost:{{ .Values.apiServerPort }}
         certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     users:
     - name: service-account

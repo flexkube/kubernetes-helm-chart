@@ -97,8 +97,12 @@ spec:
         - /hyperkube
         - kube-apiserver
         - --etcd-servers={{ .Values.etcdServers }}
+        {{- if .Values.kubeAPIServer.bindOnHostIP }}
         # We run on host network, so we bind only on host IP, which ideally would not be a public interface.
         - --bind-address=$(HOST_IP)
+        {{- else }}
+        - --bind-address={{ .Values.kubeAPIServer.bindAddress }}
+        {{- end }}
         # We run on host network, but we want to advertise Pod IP address to kubernetes.default.svc service endpoint.
         # Without this line, we may get public IP address being added to the endpoint, which is not correct.
         - --advertise-address=$(HOST_IP)
@@ -118,17 +122,16 @@ spec:
         - --authorization-mode=RBAC,Node
         # Required to validate service account tokens created by controller manager
         - --service-account-key-file=/etc/kubernetes/pki/service-account.crt
-        # Bootstrap control plane is running on port 8443 instead of standard 6443, as haproxy is listening on 6443 for
-        # load balancing and failover. Bootstrap kube-apiserver registers kubernetes.default.svc with port 8443, so we need to
-        # use the same port here as bootstrap kube-apiserver.
-        - --secure-port=8443
+        # Allow to customize TLS port, as some people may want to run it on custom port,
+        # for security, to have a LB in front of it or something.
+        - --secure-port={{ .Values.kubeAPIServer.securePort }}
         # Prefer to talk to kubelets over InternalIP rather than via Hostname or DNS, to make it more robust
         - --kubelet-preferred-address-types=InternalIP,Hostname,InternalDNS,ExternalDNS,ExternalIP
         livenessProbe:
           httpGet:
             scheme: HTTPS
             path: /livez
-            port: 8443
+            port: {{ .Values.kubeAPIServer.securePort }}
           initialDelaySeconds: 30
           timeoutSeconds: 30
         env:
@@ -136,10 +139,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
         volumeMounts:
         - name: secrets
           mountPath: /etc/kubernetes/pki
