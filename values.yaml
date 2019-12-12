@@ -1,19 +1,6 @@
 replicas: 1
-kubernetesAPIServerKey: ""
-kubernetesAPIServerCertificate: ""
-serviceAccountPublicKey: ""
 kubernetesCACertificate: ""
 serviceAccountPrivateKey: ""
 kubernetesCAKey: ""
 rootCACertificate: ""
-etcdServers: ""
-# Use the same default as kubeadm
-# https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/
-serviceCIDR: "10.96.0.0/12"
-
 apiServerPort: 6443
-
-kubeAPIServer:
-  bindOnHostIP: false
-  bindAddress: 0.0.0.0
-  securePort: 6443
