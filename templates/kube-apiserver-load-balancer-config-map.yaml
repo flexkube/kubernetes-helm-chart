@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-apiserver-load-balancer
+data:
+  haproxy.cfg: |
+    defaults
+      # Do TLS passthrough
+      mode tcp
+      # Required values for both frontend and backend
+      timeout connect 5000ms
+      timeout client 50000ms
+      timeout server 50000ms
+
+    frontend kube-apiserver
+      bind 0.0.0.0:6443
+      default_backend kube-apiserver
+
+    backend kube-apiserver
+      {{- range $index, $server := .Values.apiServers }}
+      server {{ $index }} {{ $server }} check
+      {{- end }}
+
+    frontend stats
+      bind 0.0.0.0:8080
+      mode http
+      option http-use-htx
+      http-request use-service prometheus-exporter if { path /metrics }
+      stats enable
+      stats uri /stats
+      stats refresh 10s

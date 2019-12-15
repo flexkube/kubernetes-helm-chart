@@ -5,6 +5,9 @@ metadata:
   labels:
     tier: node
     k8s-app: kube-proxy
+  annotations:
+    # Automatically rolls update when config changes
+    checksum/config: {{ include (print $.Template.BasePath "/kube-proxy/configmap.yaml") . | sha256sum }}
 spec:
   selector:
     matchLabels:
@@ -52,10 +55,52 @@ spec:
         - name: lib-modules
           mountPath: /lib/modules
           readOnly: true
+      - name: kube-apiserver-load-balancer-host
+        image: haproxy:2.1.0-alpine
+        volumeMounts:
+        - name: kube-apiserver-load-balancer-host
+          mountPath: /usr/local/etc/haproxy
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 38080
+          initialDelaySeconds: 15
+          timeoutSeconds: 15
+      initContainers:
+      - name: kube-apiserver-load-balancer-host-template
+        image: haproxy:2.1.0-alpine
+        env:
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        command:
+        - /bin/sh
+        - -c
+        - |
+          sed 's/HOST_IP/$(HOST_IP)/g' /usr/local/etc/haproxy.template/haproxy.cfg > /usr/local/etc/haproxy/haproxy.cfg && \
+          sed 's/HOST_IP/$(HOST_IP)/g' /etc/kubernetes.template/kube-proxy.yaml > /etc/kubernetes/kube-proxy.yaml && \
+          sed 's/HOST_IP/$(HOST_IP)/g' /etc/kubernetes.template/kubeconfig > /etc/kubernetes/kubeconfig
+        volumeMounts:
+        - name: kube-apiserver-load-balancer-host-template
+          mountPath: /usr/local/etc/haproxy.template
+        - name: kube-apiserver-load-balancer-host
+          mountPath: /usr/local/etc/haproxy
+        - name: kube-proxy-template
+          mountPath: /etc/kubernetes.template
+        - name: kube-proxy
+          mountPath: /etc/kubernetes
       volumes:
-      - name: kube-proxy
+      - name: kube-proxy-template
         configMap:
           name: kube-proxy
+      - name: kube-proxy
+        emptyDir: {}
       - name: lib-modules
         hostPath:
           path: /lib/modules
+      - name: kube-apiserver-load-balancer-host-template
+        configMap:
+          name: kube-apiserver-load-balancer-host
+      - name: kube-apiserver-load-balancer-host
+        emptyDir: {}

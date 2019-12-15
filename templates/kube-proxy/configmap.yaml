@@ -9,12 +9,14 @@ data:
     mode: iptables
     clientConnection:
       kubeconfig: /etc/kubernetes/kubeconfig
+    metricsBindAddress: HOST_IP
+    healthzBindAddress: HOST_IP
   kubeconfig: |
     apiVersion: v1
     clusters:
     - name: local
       cluster:
-        server: https://localhost:{{ .Values.apiServerPort }}
+        server: https://HOST_IP:7443
         certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     users:
     - name: service-account
@@ -25,3 +27,35 @@ data:
     - context:
         cluster: local
         user: service-account
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-apiserver-load-balancer-host
+data:
+  haproxy.cfg: |
+    defaults
+      # Do TLS passthrough
+      mode tcp
+      # Required values for both frontend and backend
+      timeout connect 5000ms
+      timeout client 50000ms
+      timeout server 50000ms
+
+    frontend kube-apiserver
+      bind HOST_IP:7443
+      default_backend kube-apiserver
+
+    backend kube-apiserver
+      {{- range $index, $server := .Values.apiServers }}
+      server {{ $index }} {{ $server }} check
+      {{- end }}
+
+    frontend stats
+      bind HOST_IP:38080
+      mode http
+      option http-use-htx
+      http-request use-service prometheus-exporter if { path /metrics }
+      stats enable
+      stats uri /stats
+      stats refresh 10s

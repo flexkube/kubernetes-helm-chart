@@ -8,6 +8,9 @@ metadata:
     {{- if eq .Values.replicas 1.0 }}
     pdb: controlplane
     {{- end }}
+  annotations:
+    # Automatically rolls update when config changes
+    checksum/config: {{ include (print $.Template.BasePath "/kube-apiserver-load-balancer-config-map.yaml") . | sha256sum }}
 spec:
   replicas: {{ .Values.replicas }}
   strategy:
@@ -85,13 +88,10 @@ spec:
         - ./hyperkube
         - kube-scheduler
         - --config=/etc/kubernetes/kube-scheduler.yaml
-        # Override address where we connect to API server
-        - --master=https://$(HOST_IP):{{ .Values.apiServerPort }}
-        env:
-        - name: HOST_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
+        - --authentication-kubeconfig=/etc/kubernetes/kubeconfig
+        - --authorization-kubeconfig=/etc/kubernetes/kubeconfig
+        - --requestheader-client-ca-file=/etc/kubernetes/pki/requestheader-client-ca-file
+        - --client-ca-file=/etc/kubernetes/pki/client-ca-file
         livenessProbe:
           httpGet:
             scheme: HTTPS
@@ -103,7 +103,31 @@ spec:
         - name: kube-scheduler
           mountPath: /etc/kubernetes
           readOnly: true
+        - name: extension-apiserver-authentication
+          mountPath: /etc/kubernetes/pki
+          readOnly: true
+      - name: kube-apiserver-load-balancer
+        image: haproxy:2.1.0-alpine
+        volumeMounts:
+        - name: kube-apiserver-load-balancer
+          mountPath: /usr/local/etc/haproxy
+          readOnly: true
+        ports:
+        - name: metrics
+          containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 15
       volumes:
       - name: kube-scheduler
         configMap:
           name: kube-scheduler
+      - name: kube-apiserver-load-balancer
+        configMap:
+          name: kube-apiserver-load-balancer
+      - name: extension-apiserver-authentication
+        configMap:
+          name: extension-apiserver-authentication

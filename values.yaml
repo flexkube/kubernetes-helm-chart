@@ -1,6 +1,4 @@
 replicas: 1
-kubernetesCACertificate: ""
 serviceAccountPrivateKey: ""
 kubernetesCAKey: ""
-rootCACertificate: ""
-apiServerPort: 6443
+apiServers: []

@@ -8,6 +8,9 @@ metadata:
     {{- if eq .Values.replicas 1.0 }}
     pdb: controlplane
     {{- end }}
+  annotations:
+    # Automatically rolls update when config changes
+    checksum/config: {{ include (print $.Template.BasePath "/kube-apiserver-load-balancer-config-map.yaml") . | sha256sum }}
 spec:
   replicas: {{ .Values.replicas }}
   strategy:
@@ -85,17 +88,15 @@ spec:
         - ./hyperkube
         - kube-controller-manager
         - --use-service-account-credentials
-        - --cluster-signing-cert-file=/etc/kubernetes/secrets/ca.crt
+        - --cluster-signing-cert-file=/etc/kubernetes/pki/client-ca-file
         - --cluster-signing-key-file=/etc/kubernetes/secrets/ca.key
         - --service-account-private-key-file=/etc/kubernetes/secrets/service-account.key
-        - --root-ca-file=/etc/kubernetes/secrets/root.crt
+        - --root-ca-file=/etc/kubernetes/pki/client-ca-file
         - --kubeconfig=/etc/kubernetes/kubeconfig
-        - --master=https://$(HOST_IP):{{ .Values.apiServerPort }}
-        env:
-        - name: HOST_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
+        - --authentication-kubeconfig=/etc/kubernetes/kubeconfig
+        - --authorization-kubeconfig=/etc/kubernetes/kubeconfig
+        - --requestheader-client-ca-file=/etc/kubernetes/pki/requestheader-client-ca-file
+        - --client-ca-file=/etc/kubernetes/pki/client-ca-file
         livenessProbe:
           httpGet:
             scheme: HTTPS
@@ -110,6 +111,24 @@ spec:
         - name: secrets
           mountPath: /etc/kubernetes/secrets
           readOnly: true
+        - name: extension-apiserver-authentication
+          mountPath: /etc/kubernetes/pki
+          readOnly: true
+      - name: kube-apiserver-load-balancer
+        image: haproxy:2.1.0-alpine
+        volumeMounts:
+        - name: kube-apiserver-load-balancer
+          mountPath: /usr/local/etc/haproxy
+          readOnly: true
+        ports:
+        - name: metrics
+          containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 15
       volumes:
       - name: secrets
         secret:
@@ -117,4 +136,10 @@ spec:
       - name: kube-controller-manager
         configMap:
           name: kube-controller-manager
+      - name: kube-apiserver-load-balancer
+        configMap:
+          name: kube-apiserver-load-balancer
+      - name: extension-apiserver-authentication
+        configMap:
+          name: extension-apiserver-authentication
       dnsPolicy: Default # Don't use cluster DNS.
