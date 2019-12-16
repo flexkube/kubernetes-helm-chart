@@ -91,7 +91,7 @@ spec:
         - --cluster-signing-cert-file=/etc/kubernetes/pki/client-ca-file
         - --cluster-signing-key-file=/etc/kubernetes/secrets/ca.key
         - --service-account-private-key-file=/etc/kubernetes/secrets/service-account.key
-        - --root-ca-file=/etc/kubernetes/pki/client-ca-file
+        - --root-ca-file=/etc/kubernetes/secrets/root.crt
         - --kubeconfig=/etc/kubernetes/kubeconfig
         - --authentication-kubeconfig=/etc/kubernetes/kubeconfig
         - --authorization-kubeconfig=/etc/kubernetes/kubeconfig

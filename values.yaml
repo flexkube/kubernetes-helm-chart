@@ -1,4 +1,6 @@
 replicas: 1
 serviceAccountPrivateKey: ""
 kubernetesCAKey: ""
+rootCACertificate: ""
+kubernetesCACertificate: ""
 apiServers: []
