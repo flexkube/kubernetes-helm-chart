@@ -16,7 +16,7 @@ data:
     clusters:
     - name: local
       cluster:
-        server: https://HOST_IP:7443
+        server: https://127.0.0.1:7443
         certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     users:
     - name: service-account
@@ -43,7 +43,7 @@ data:
       timeout server 50000ms
 
     frontend kube-apiserver
-      bind HOST_IP:7443
+      bind 127.0.0.1:7443
       default_backend kube-apiserver
 
     backend kube-apiserver
