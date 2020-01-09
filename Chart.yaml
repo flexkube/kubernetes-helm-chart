@@ -1,6 +1,7 @@
 apiVersion: v2
 name: kubernetes
 description: Kubernetes self-hosted control plane Helm chart.
+icon: https://flexkube.github.io/assets/logo.png
 
 # A chart can be either an 'application' or a 'library' chart.
 #
