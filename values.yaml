@@ -4,3 +4,4 @@ kubernetesCAKey: ""
 rootCACertificate: ""
 kubernetesCACertificate: ""
 apiServers: []
+flexVolumePluginDir: "/usr/libexec/kubernetes/kubelet-plugins/volume/exec"

@@ -97,6 +97,7 @@ spec:
         - --authorization-kubeconfig=/etc/kubernetes/kubeconfig
         - --requestheader-client-ca-file=/etc/kubernetes/pki/requestheader-client-ca-file
         - --client-ca-file=/etc/kubernetes/pki/client-ca-file
+        - --flex-volume-plugin-dir={{ .Values.flexVolumePluginDir }}
         livenessProbe:
           httpGet:
             scheme: HTTPS
