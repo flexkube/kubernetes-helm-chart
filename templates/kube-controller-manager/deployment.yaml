@@ -83,7 +83,7 @@ spec:
         effect: NoSchedule
       containers:
       - name: kube-controller-manager
-        image: k8s.gcr.io/hyperkube:v{{ .Chart.AppVersion }}
+        image: {{ .Values.kubeControllerManager.image | default (printf "k8s.gcr.io/hyperkube:v%s" .Chart.AppVersion) }}
         command:
         - ./hyperkube
         - kube-controller-manager

@@ -35,7 +35,7 @@ spec:
         operator: Exists
       containers:
       - name: kube-proxy
-        image: k8s.gcr.io/hyperkube:v{{ .Chart.AppVersion }}
+        image: {{ .Values.kubeProxy.image | default (printf "k8s.gcr.io/hyperkube:v%s" .Chart.AppVersion) }}
         command:
         - ./hyperkube
         - kube-proxy
