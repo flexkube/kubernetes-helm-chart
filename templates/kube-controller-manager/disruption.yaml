@@ -1,4 +1,3 @@
-{{- if not (eq .Values.replicas 1.0) }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -7,6 +6,4 @@ spec:
   minAvailable: 1
   selector:
     matchLabels:
-      tier: control-plane
       k8s-app: kube-controller-manager
-{{- end }}
