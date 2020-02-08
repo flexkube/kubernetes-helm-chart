@@ -11,6 +11,7 @@ data:
       scheduler: rr
     clientConnection:
       kubeconfig: /etc/kubernetes/kubeconfig
+    clusterCIDR: {{ required "podsCIDR must be specified!" .Values.podsCIDR }}
     metricsBindAddress: HOST_IP
     healthzBindAddress: HOST_IP
   kubeconfig: |
