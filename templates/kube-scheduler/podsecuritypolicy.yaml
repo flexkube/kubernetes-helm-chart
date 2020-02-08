@@ -12,6 +12,7 @@ spec:
     - ALL
   volumes:
     - 'configMap'
+    - 'secret'
   hostNetwork: false
   hostIPC: false
   hostPID: false
