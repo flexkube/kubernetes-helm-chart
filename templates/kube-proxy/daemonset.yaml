@@ -74,12 +74,17 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.hostIP
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         command:
         - /bin/sh
         - -c
         - |
           sed 's/HOST_IP/$(HOST_IP)/g' /usr/local/etc/haproxy.template/haproxy.cfg > /usr/local/etc/haproxy/haproxy.cfg && \
           sed 's/HOST_IP/$(HOST_IP)/g' /etc/kubernetes.template/kube-proxy.yaml > /etc/kubernetes/kube-proxy.yaml && \
+          sed -i 's/NODE_NAME/$(NODE_NAME)/g' /etc/kubernetes/kube-proxy.yaml && \
           sed 's/HOST_IP/$(HOST_IP)/g' /etc/kubernetes.template/kubeconfig > /etc/kubernetes/kubeconfig
         volumeMounts:
         - name: kube-apiserver-load-balancer-host-template

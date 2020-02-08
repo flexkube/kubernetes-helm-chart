@@ -14,6 +14,7 @@ data:
     clusterCIDR: {{ required "podsCIDR must be specified!" .Values.podsCIDR }}
     metricsBindAddress: HOST_IP
     healthzBindAddress: HOST_IP
+    hostnameOverride: NODE_NAME
   kubeconfig: |
     apiVersion: v1
     clusters:
