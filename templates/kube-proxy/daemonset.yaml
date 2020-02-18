@@ -55,6 +55,8 @@ spec:
         - name: lib-modules
           mountPath: /lib/modules
           readOnly: true
+        - name: xtables
+          mountPath: /run/xtables.lock
       - name: kube-apiserver-load-balancer-host
         image: haproxy:2.1.0-alpine
         volumeMounts:
@@ -109,3 +111,7 @@ spec:
           name: kube-apiserver-load-balancer-host
       - name: kube-apiserver-load-balancer-host
         emptyDir: {}
+      - name: xtables
+        hostPath:
+          path: /run/xtables.lock
+          type: File
