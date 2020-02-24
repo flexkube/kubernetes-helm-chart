@@ -57,20 +57,9 @@ spec:
           readOnly: true
         - name: xtables
           mountPath: /run/xtables.lock
-      - name: kube-apiserver-load-balancer-host
-        image: haproxy:2.1.0-alpine
-        volumeMounts:
-        - name: kube-apiserver-load-balancer-host
-          mountPath: /usr/local/etc/haproxy
-        livenessProbe:
-          httpGet:
-            path: /metrics
-            port: 38080
-          initialDelaySeconds: 15
-          timeoutSeconds: 15
       initContainers:
-      - name: kube-apiserver-load-balancer-host-template
-        image: haproxy:2.1.0-alpine
+      - name: config-templates
+        image: {{ .Values.kubeProxy.image | default (printf "k8s.gcr.io/hyperkube:v%s" .Chart.AppVersion) }}
         env:
         - name: HOST_IP
           valueFrom:
@@ -84,15 +73,10 @@ spec:
         - /bin/sh
         - -c
         - |
-          sed 's/HOST_IP/$(HOST_IP)/g' /usr/local/etc/haproxy.template/haproxy.cfg > /usr/local/etc/haproxy/haproxy.cfg && \
           sed 's/HOST_IP/$(HOST_IP)/g' /etc/kubernetes.template/kube-proxy.yaml > /etc/kubernetes/kube-proxy.yaml && \
           sed -i 's/NODE_NAME/$(NODE_NAME)/g' /etc/kubernetes/kube-proxy.yaml && \
           sed 's/HOST_IP/$(HOST_IP)/g' /etc/kubernetes.template/kubeconfig > /etc/kubernetes/kubeconfig
         volumeMounts:
-        - name: kube-apiserver-load-balancer-host-template
-          mountPath: /usr/local/etc/haproxy.template
-        - name: kube-apiserver-load-balancer-host
-          mountPath: /usr/local/etc/haproxy
         - name: kube-proxy-template
           mountPath: /etc/kubernetes.template
         - name: kube-proxy
@@ -106,11 +90,6 @@ spec:
       - name: lib-modules
         hostPath:
           path: /lib/modules
-      - name: kube-apiserver-load-balancer-host-template
-        configMap:
-          name: kube-apiserver-load-balancer-host
-      - name: kube-apiserver-load-balancer-host
-        emptyDir: {}
       - name: xtables
         hostPath:
           path: /run/xtables.lock
