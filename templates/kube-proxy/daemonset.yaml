@@ -57,6 +57,9 @@ spec:
           readOnly: true
         - name: xtables
           mountPath: /run/xtables.lock
+        resources:
+          requests:
+            memory: 20Mi
       initContainers:
       - name: config-templates
         image: {{ .Values.kubeProxy.image | default (printf "k8s.gcr.io/hyperkube:v%s" .Chart.AppVersion) }}

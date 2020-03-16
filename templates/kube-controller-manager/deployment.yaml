@@ -102,6 +102,9 @@ spec:
         - name: extension-apiserver-authentication
           mountPath: /etc/kubernetes/pki
           readOnly: true
+        resources:
+          requests:
+            memory: 80Mi
       - name: kube-apiserver-load-balancer
         image: haproxy:2.1.0-alpine
         volumeMounts:
