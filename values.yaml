@@ -5,10 +5,7 @@ rootCACertificate: ""
 kubernetesCACertificate: ""
 apiServers: []
 flexVolumePluginDir: "/usr/libexec/kubernetes/kubelet-plugins/volume/exec"
-podsCIDR: ""
 kubeScheduler:
   image: ""
 kubeControllerManager:
-  image: ""
-kubeProxy:
   image: ""
