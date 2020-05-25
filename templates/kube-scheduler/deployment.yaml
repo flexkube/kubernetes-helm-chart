@@ -101,7 +101,7 @@ spec:
           requests:
             memory: 80Mi
       - name: kube-apiserver-load-balancer
-        image: haproxy:2.1.0-alpine
+        image: haproxy:2.1.4-alpine
         volumeMounts:
         - name: kube-apiserver-load-balancer
           mountPath: /usr/local/etc/haproxy
