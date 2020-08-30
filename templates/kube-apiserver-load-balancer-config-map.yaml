@@ -5,9 +5,9 @@ metadata:
 data:
   haproxy.cfg: |
     defaults
-      # Do TLS passthrough
+      # Do TLS passthrough.
       mode tcp
-      # Required values for both frontend and backend
+      # Required values for both frontend and backend.
       timeout connect 5s
       timeout client 30s
       timeout client-fin 30s

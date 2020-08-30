@@ -13,7 +13,7 @@ data:
     users:
     - name: service-account
       user:
-        # Use service account token
+        # Use service account token.
         tokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     contexts:
     - context:
