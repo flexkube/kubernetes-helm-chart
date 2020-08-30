@@ -19,7 +19,8 @@ data:
       default_backend kube-apiserver
 
     backend kube-apiserver
-      option httpchk GET /healthz HTTP/1.1\r\nHost:\ kube-apiserver
+      option httpchk
+      http-check send meth GET uri /healthz ver HTTP/1.1 hdr host kube-apiserver
       {{- range $index, $server := .Values.apiServers }}
       server {{ $index }} {{ $server }} verify none check check-ssl
       {{- end }}
