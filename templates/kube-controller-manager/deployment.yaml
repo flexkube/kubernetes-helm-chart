@@ -27,7 +27,6 @@ spec:
         k8s-app: kube-controller-manager
         component: kube-controller-manager
       annotations:
-        seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
         # Automatically rolls update when config changes.
         checksum/config: {{ include (print $.Template.BasePath "/kube-apiserver-load-balancer-config-map.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/kube-controller-manager/secret.yaml") . | sha256sum }}
@@ -65,6 +64,8 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: kube-controller-manager
       tolerations:
       - key: node-role.kubernetes.io/master
