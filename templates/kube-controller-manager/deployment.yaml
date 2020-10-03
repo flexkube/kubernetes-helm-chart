@@ -106,7 +106,10 @@ spec:
           readOnly: true
         resources:
           requests:
-            memory: 80Mi
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            memory: 300Mi
       - name: kube-apiserver-load-balancer
         image: {{ .Values.haproxyImage }}
         volumeMounts:
@@ -122,6 +125,11 @@ spec:
             port: 8080
           initialDelaySeconds: 15
           timeoutSeconds: 15
+        resources:
+          requests:
+            memory: 70Mi
+          limits:
+            memory: 200Mi
       volumes:
       - name: secrets
         secret:
