@@ -102,7 +102,9 @@ spec:
         resources:
           requests:
             cpu: 10m
-            memory: 20Mi
+            memory: 50Mi
+          limits:
+            memory: 150Mi
       - name: kube-apiserver-load-balancer
         image: {{ .Values.haproxyImage }}
         volumeMounts:
