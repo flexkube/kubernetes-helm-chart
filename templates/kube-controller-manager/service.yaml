@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: kube-controller-manager
+  name: kube-controller-manager-haproxy
+spec:
+  clusterIP: None
+  ports:
+  - name: http-metrics
+    port: 8080
+    protocol: TCP
+  selector:
+    k8s-app: kube-controller-manager
