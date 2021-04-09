@@ -27,6 +27,7 @@ spec:
         k8s-app: kube-controller-manager
         component: kube-controller-manager
       annotations:
+        kubectl.kubernetes.io/default-container: kube-controller-manager
         # Automatically rolls update when config changes.
         checksum/config: {{ include (print $.Template.BasePath "/kube-apiserver-load-balancer-config-map.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/kube-controller-manager/secret.yaml") . | sha256sum }}

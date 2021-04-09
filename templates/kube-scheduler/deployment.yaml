@@ -27,6 +27,7 @@ spec:
         k8s-app: kube-scheduler
         component: kube-scheduler
       annotations:
+        kubectl.kubernetes.io/default-container: kube-scheduler
         # Automatically rolls update when config changes.
         checksum/config: {{ include (print $.Template.BasePath "/kube-apiserver-load-balancer-config-map.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/kube-scheduler/configmap.yaml") . | sha256sum }}
