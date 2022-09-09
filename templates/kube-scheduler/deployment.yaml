@@ -78,7 +78,7 @@ spec:
         effect: NoSchedule
       containers:
       - name: kube-scheduler
-        image: {{ .Values.kubeScheduler.image | default (printf "k8s.gcr.io/kube-scheduler:v%s" .Chart.AppVersion) }}
+        image: {{ .Values.kubeScheduler.image | default (printf "registry.k8s.io/kube-scheduler:v%s" .Chart.AppVersion) }}
         command:
         - kube-scheduler
         - --config=/etc/kubernetes/kube-scheduler.yaml

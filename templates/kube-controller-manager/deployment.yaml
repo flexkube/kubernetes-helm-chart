@@ -74,7 +74,7 @@ spec:
         effect: NoSchedule
       containers:
       - name: kube-controller-manager
-        image: {{ .Values.kubeControllerManager.image | default (printf "k8s.gcr.io/kube-controller-manager:v%s" .Chart.AppVersion) }}
+        image: {{ .Values.kubeControllerManager.image | default (printf "registry.k8s.io/kube-controller-manager:v%s" .Chart.AppVersion) }}
         command:
         - kube-controller-manager
         - --use-service-account-credentials
