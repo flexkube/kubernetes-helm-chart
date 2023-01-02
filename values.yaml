@@ -9,4 +9,4 @@ kubeScheduler:
   image: ""
 kubeControllerManager:
   image: ""
-haproxyImage: "haproxy:2.6.6-alpine"
+haproxyImage: "haproxy:2.7.1-alpine"
