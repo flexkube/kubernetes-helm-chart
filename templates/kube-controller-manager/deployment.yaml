@@ -63,8 +63,6 @@ spec:
         node-role.kubernetes.io/master: ""
       priorityClassName: system-cluster-critical
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 65534
         seccompProfile:
           type: RuntimeDefault
       serviceAccountName: kube-controller-manager
@@ -105,6 +103,9 @@ spec:
         - name: extension-apiserver-authentication
           mountPath: /etc/kubernetes/pki
           readOnly: true
+        - name: kubelet-volume-plugins
+          mountPath: /var/lib/kubelet
+          readOnly: true
         resources:
           requests:
             cpu: 50m
@@ -144,4 +145,7 @@ spec:
       - name: extension-apiserver-authentication
         configMap:
           name: extension-apiserver-authentication
+      - name: kubelet-volume-plugins
+        hostPath:
+          path: /var/lib/kubelet
       dnsPolicy: Default # Don't use cluster DNS.
