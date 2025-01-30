@@ -14,7 +14,7 @@ data:
       timeout server 30s
       timeout tunnel 21d
 
-    frontend kube-apiserver
+    frontend kube-apiserver-frontend
       bind 0.0.0.0:6443
       default_backend kube-apiserver
 
